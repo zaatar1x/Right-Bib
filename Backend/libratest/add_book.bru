@@ -1,0 +1,31 @@
+meta {
+  name: add_book
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3000/books/new
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1ODI3OTA1LCJleHAiOjE3NzY0MzI3MDV9.qpRXwpAO_34hJkHa3uWTdHpHPjMF791B2Re7eeeg42Y
+}
+
+body:json {
+  {
+    "title": "Ruy Blas",
+    "year": 1838,
+    "editor": "ghassen rached",
+    "image": "https://media.senscritique.com/media/000019643792/300/ruy_blas.jpg",
+    "category": "roman",
+    "author": 1
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

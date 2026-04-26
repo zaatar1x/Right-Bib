@@ -1,0 +1,20 @@
+meta {
+  name: favoris_top
+  type: http
+  seq: 11
+}
+
+get {
+  url: http://localhost:3000/favoris/stats/total
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc2MDQ0Mzc4LCJleHAiOjE3NzY2NDkxNzh9.mBU14vcEOGd59mNNOCJgJinDX506tYH7fpmNhIaiVyE
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
