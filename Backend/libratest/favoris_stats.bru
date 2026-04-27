@@ -1,15 +1,20 @@
 meta {
-  name: favoris_stats
+  name: 18 - Total Favorites (Admin Only)
   type: http
-  seq: 9
+  seq: 18
 }
 
 get {
   url: http://localhost:3000/favoris/stats/total
   body: none
-  auth: inherit
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

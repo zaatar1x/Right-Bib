@@ -1,15 +1,27 @@
 meta {
-  name: update_book
+  name: 14 - Update Book
   type: http
-  seq: 7
+  seq: 14
 }
 
 put {
-  url: https
-  body: none
+  url: http://localhost:3000/books/edit/1
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "title": "Les Misérables - Edition Complète",
+    "year": 1862,
+    "editor": "A. Lacroix",
+    "image": "https://example.com/les-miserables-complete.jpg",
+    "category": "roman",
+    "author": 1
+  }
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

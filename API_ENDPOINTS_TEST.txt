@@ -1,0 +1,199 @@
+# API ENDPOINTS TESTING GUIDE
+# Base URL: http://localhost:3000 (adjust port as needed)
+
+## AUTHENTICATION ENDPOINTS
+
+### 1. Sign Up (Register User)
+POST /auth/signup
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "username": "testuser",
+  "password": "password123"
+}
+
+### 2. Sign In (Login User)
+POST /auth/signin
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+
+### 3. Get Total Users (Admin Only)
+GET /auth/stats/total-users
+Authorization: Bearer YOUR_JWT_TOKEN
+(Requires admin role)
+
+## AUTHOR ENDPOINTS
+
+### 4. Get All Authors
+GET /author/all
+
+### 5. Add New Author
+POST /author/add
+Content-Type: application/json
+
+{
+  "prenom": "Albert",
+  "nom": "Camus"
+}
+
+## BOOK ENDPOINTS
+
+### 6. Get All Books
+GET /books/all
+
+### 7. Add New Book (Admin Only)
+POST /books/new
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "title": "L'Étranger",
+  "year": 1942,
+  "editor": "Gallimard",
+  "image": "https://example.com/image.jpg",
+  "category": "roman",
+  "author": 1
+}
+
+Available categories: "roman", "science", "histoire", "informatique", "art", "philosophie", "autre"
+
+### 8. Get Book by ID
+GET /books/search/1
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### 9. Update Book
+PUT /books/edit/1
+Content-Type: application/json
+
+{
+  "title": "L'Étranger - Updated",
+  "year": 1942,
+  "editor": "Gallimard",
+  "image": "https://example.com/new-image.jpg",
+  "category": "philosophie",
+  "author": 1
+}
+
+### 10. Remove Book (Soft Delete)
+DELETE /books/remove/1
+
+### 11. Delete Book (Hard Delete)
+DELETE /books/delete/1
+
+### 12. Soft Delete Book
+DELETE /books/softdelete/1
+
+### 13. Restore Book
+PATCH /books/restore/1
+
+### 14. Recover Book
+PATCH /books/recover/1
+
+### 15. Books Statistics (Admin Only)
+GET /books/stats
+Authorization: Bearer YOUR_JWT_TOKEN
+
+## FAVORITES ENDPOINTS
+
+### 16. Add Book to Favorites
+POST /favoris/1
+Authorization: Bearer YOUR_JWT_TOKEN
+(Replace 1 with book ID)
+
+### 17. Remove Book from Favorites
+DELETE /favoris/1
+Authorization: Bearer YOUR_JWT_TOKEN
+(Replace 1 with book ID)
+
+### 18. Get My Favorites
+GET /favoris
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### 19. Total Favorites Statistics (Admin Only)
+GET /favoris/stats/total
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### 20. Most Favorited Books (Admin Only)
+GET /favoris/stats/most-favourited?limit=5
+Authorization: Bearer YOUR_JWT_TOKEN
+
+## TASKS ENDPOINTS
+
+### 21. Hello Test Endpoint
+GET /tasks/hello
+
+### 22. Get All Tasks
+GET /tasks/all
+
+### 23. Get Task Statistics
+GET /tasks/stats?startYear=2020&endYear=2025
+
+### 24. Get Task by ID
+GET /tasks/search/1
+
+### 25. Add New Task
+POST /tasks/add
+Content-Type: application/json
+
+{
+  "title": "MyTask",
+  "year": 2024,
+  "statut": "todo"
+}
+
+Available statuses: "todo", "done", "in progress"
+
+### 26. Update Task
+PUT /tasks/edit/1
+Content-Type: application/json
+
+{
+  "title": "Updated Task",
+  "year": 2024,
+  "statut": "done"
+}
+
+### 27. Delete Task
+DELETE /tasks/delete/1
+
+## TESTING NOTES:
+
+1. **Authentication Flow:**
+   - First register with /auth/signup
+   - Then login with /auth/signin to get JWT token
+   - Use the JWT token in Authorization header for protected endpoints
+
+2. **Admin Endpoints:**
+   - Some endpoints require admin role
+   - Make sure your user has admin privileges
+
+3. **Data Dependencies:**
+   - Create authors before creating books
+   - Books must reference existing author IDs
+   - Favorites require existing book IDs
+
+4. **Validation Rules:**
+   - Task title: 3-10 characters
+   - Task year: 2020-2030
+   - Book fields are required and validated
+   - Email and username must be unique
+
+5. **Response Format:**
+   - Most endpoints return JSON responses
+   - Check status codes for success/error indication
+
+## EXAMPLE TESTING SEQUENCE:
+
+1. POST /auth/signup (create user)
+2. POST /auth/signin (get token)
+3. POST /author/add (create author)
+4. POST /books/new (create book with author ID)
+5. POST /favoris/{bookId} (add to favorites)
+6. GET /favoris (view favorites)
+7. POST /tasks/add (create task)
+8. GET /tasks/all (view all tasks)

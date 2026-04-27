@@ -1,0 +1,31 @@
+meta {
+  name: 12 - Add Book A Brief History of Time (Admin Only)
+  type: http
+  seq: 12
+}
+
+post {
+  url: http://localhost:3000/books/new
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+body:json {
+  {
+    "title": "A Brief History of Time",
+    "year": 1988,
+    "editor": "Bantam Books",
+    "image": "https://example.com/brief-history.jpg",
+    "category": "science",
+    "author": 3
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

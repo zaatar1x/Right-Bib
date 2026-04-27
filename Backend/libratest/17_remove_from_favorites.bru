@@ -1,11 +1,11 @@
 meta {
-  name: 19 - Most Favorited Books (Admin Only)
+  name: 17 - Remove Book from Favorites
   type: http
-  seq: 19
+  seq: 17
 }
 
-get {
-  url: http://localhost:3000/favoris/stats/most-favourited?limit=5
+delete {
+  url: http://localhost:3000/favoris/1
   body: none
   auth: bearer
 }

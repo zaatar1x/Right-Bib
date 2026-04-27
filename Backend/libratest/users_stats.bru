@@ -1,15 +1,20 @@
 meta {
-  name: users_stats
+  name: 20 - Books Statistics (Admin Only)
   type: http
-  seq: 8
+  seq: 20
 }
 
 get {
-  url: http://localhost:3000/books/edit/5
+  url: http://localhost:3000/books/stats
   body: none
-  auth: inherit
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

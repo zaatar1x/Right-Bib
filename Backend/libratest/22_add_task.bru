@@ -1,0 +1,24 @@
+meta {
+  name: 22 - Add New Task
+  type: http
+  seq: 22
+}
+
+post {
+  url: http://localhost:3000/tasks/add
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "New Task",
+    "year": 2024,
+    "statut": "todo"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

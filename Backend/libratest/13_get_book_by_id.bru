@@ -1,11 +1,11 @@
 meta {
-  name: 19 - Most Favorited Books (Admin Only)
+  name: 13 - Get Book By ID (JWT Required)
   type: http
-  seq: 19
+  seq: 13
 }
 
 get {
-  url: http://localhost:3000/favoris/stats/most-favourited?limit=5
+  url: http://localhost:3000/books/search/1
   body: none
   auth: bearer
 }

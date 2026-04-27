@@ -1,17 +1,17 @@
 meta {
-  name: add_favooris
+  name: 15 - Add Book to Favorites
   type: http
-  seq: 6
+  seq: 15
 }
 
 post {
-  url: http://localhost:3000/favoris/2
+  url: http://localhost:3000/favoris/1
   body: none
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1ODM2ODMwLCJleHAiOjE3NzY0NDE2MzB9.Yq7jNuz7jRMe1BLIubXrV9PfwuPSgiOLL1IcZllUcfs
+  token: {{jwt_token}}
 }
 
 settings {
