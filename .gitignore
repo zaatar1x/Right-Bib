@@ -41,3 +41,7 @@ pids
 *.pid
 *.seed
 *.pid.lock
+
+# Docker
+docker-compose.override.yml
+.docker/

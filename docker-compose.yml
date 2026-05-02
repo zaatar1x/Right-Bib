@@ -13,7 +13,7 @@ services:
       - "3308:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./init-db:/docker-entrypoint-initdb.d
+      - ./Backend/init-db:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 10s
@@ -44,7 +44,7 @@ services:
   # NestJS Backend Service
   backend:
     build:
-      context: .
+      context: ./Backend
       dockerfile: Dockerfile
       target: production
     container_name: isids26-backend
@@ -77,6 +77,26 @@ services:
       start_period: 40s
     networks:
       - app-network
+
+  # Vue.js Frontend Service (Development Mode)
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile.dev
+    container_name: isids26-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    command: npm run dev -- --host 0.0.0.0
 
 # Named volumes for data persistence
 volumes:

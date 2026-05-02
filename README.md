@@ -1,23 +1,60 @@
-# Vue.js Project
+# Maktaba - Library Management System
 
-A full-stack application with NestJS backend and Vue.js frontend.
-
----
-
-## 📚 Documentation
-
-**Complete backend documentation is available in the [`docs/`](./docs/) folder:**
-
-- **[Backend Architecture](./docs/BACKEND_ARCHITECTURE.md)** - Complete system overview, modules, and technical details
-- **[API Endpoints Reference](./docs/API_ENDPOINTS_REFERENCE.md)** - All endpoints with request/response examples
-- **[Database Schema](./docs/DATABASE_SCHEMA.md)** - Database structure, relationships, and queries
-- **[Documentation Index](./docs/README.md)** - Quick start guide and overview
+A full-stack application with NestJS backend and Vue.js frontend, fully containerized with Docker.
 
 ---
 
 ## 🚀 Quick Start
 
-### Backend
+### Docker (Recommended) 🐳
+
+Run the entire stack (Frontend + Backend + Database) with one command:
+
+```bash
+docker-compose up -d --build
+```
+
+**Access Points:**
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:3000
+- **phpMyAdmin**: http://localhost:8080
+- **MySQL**: localhost:3308
+
+**Stop all services:**
+```bash
+docker-compose down
+```
+
+---
+
+### Local Development (Without Docker)
+
+#### Frontend
+
+1. Navigate to the Frontend directory
+   ```bash
+   cd Frontend
+   ```
+
+2. Install dependencies
+   ```bash
+   npm install
+   ```
+
+3. Configure environment variables
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
+
+4. Start the development server
+   ```bash
+   npm run dev
+   ```
+
+The frontend will be available at http://localhost:5173
+
+#### Backend
 
 The backend is built with **NestJS** and includes:
 - ✅ JWT Authentication system
@@ -49,18 +86,7 @@ The backend is built with **NestJS** and includes:
    npm run start:dev
    ```
 
-#### Docker (Recommended)
-
-Run with Docker Compose:
-```bash
-cd Backend
-docker-compose up -d
-```
-
-**Access Points:**
-- Backend API: http://localhost:3000
-- phpMyAdmin: http://localhost:8080
-- MySQL: localhost:3308
+The backend will be available at http://localhost:3000
 
 ---
 
@@ -68,20 +94,19 @@ docker-compose up -d
 
 Use the **Bruno collection** in `Backend/libratest/` for API testing.
 
-Or refer to the [API Endpoints Reference](./docs/API_ENDPOINTS_REFERENCE.md) for cURL examples.
-
 ---
 
 ## 🛠 Technology Stack
 
 | Component | Technology |
 |-----------|------------|
+| Frontend Framework | Vue.js 3.4 |
 | Backend Framework | NestJS 10.0 |
-| Language | TypeScript 5.1 |
-| Database | MySQL 8.0 |
+| Language | TypeScript 5.1+ |
+| Database | MySQL 8.4 |
 | ORM | TypeORM 0.3 |
 | Authentication | JWT + Bcrypt |
-| Containerization | Docker |
+| Containerization | Docker + Docker Compose |
 
 ---
 
@@ -90,8 +115,25 @@ Or refer to the [API Endpoints Reference](./docs/API_ENDPOINTS_REFERENCE.md) for
 - **27 API Endpoints** across 5 modules
 - **4 Database Tables** with relationships
 - **2 Security Guards** (JWT + Admin)
-- **Docker-ready** with 3 services
+- **4 Docker Services** (Frontend, Backend, Database, phpMyAdmin)
 
 ---
 
-For detailed information, see the [complete documentation](./docs/).
+## 🐳 Docker Commands
+
+```bash
+# Start all services
+docker-compose up -d
+
+# Stop all services
+docker-compose down
+
+# View logs
+docker-compose logs -f
+
+# Rebuild and restart
+docker-compose up -d --build
+
+# Check status
+docker-compose ps
+```
