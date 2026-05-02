@@ -163,7 +163,34 @@ async function handleSubmit() {
   if (editingBook.value) {
     await booksService.update(editingBook.value.id, form.value)
   } else {
-    await booksService.create(form.value)
+    // Check if image is a base64 file upload
+    if (form.value.image && form.value.image.startsWith('data:')) {
+      // Convert base64 to FormData with file blob
+      const formData = new FormData()
+      formData.append('title', form.value.title)
+      formData.append('year', form.value.year.toString())
+      formData.append('editor', form.value.editor)
+      formData.append('category', form.value.category)
+      formData.append('author', form.value.author.toString())
+      
+      // Convert base64 to blob
+      const base64Data = form.value.image.split(',')[1]
+      const mimeType = form.value.image.split(',')[0].match(/:(.*?);/)?.[1] || 'image/jpeg'
+      const byteCharacters = atob(base64Data)
+      const byteNumbers = new Array(byteCharacters.length)
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i)
+      }
+      const byteArray = new Uint8Array(byteNumbers)
+      const blob = new Blob([byteArray], { type: mimeType })
+      const extension = mimeType.split('/')[1]
+      formData.append('file', blob, `upload.${extension}`)
+      
+      await booksService.create(formData)
+    } else {
+      // URL or no image - send as JSON
+      await booksService.create(form.value)
+    }
   }
   closeModal()
   await loadBooks()

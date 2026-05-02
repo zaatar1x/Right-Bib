@@ -40,11 +40,40 @@ const props = defineProps<{
 const authStore = useAuthStore()
 const favoritesStore = useFavoritesStore()
 
+// Debug logging
+console.log('BOOK DATA:', props.book)
+
 const authorName = computed(() => {
-  if (typeof props.book.author === 'object') {
-    return `${props.book.author.prenom} ${props.book.author.nom}`
+  // Handle multiple possible author formats
+  const author = props.book.author
+  
+  // CASE A: author is an object with prenom and nom
+  if (typeof author === 'object' && author !== null) {
+    if ('prenom' in author && 'nom' in author) {
+      return `${author.prenom} ${author.nom}`
+    }
+    // CASE B: author object with name field
+    if ('name' in author) {
+      return author.name
+    }
   }
-  return 'Unknown Author'
+  
+  // CASE C: authorName field exists on book
+  if ('authorName' in props.book && props.book.authorName) {
+    return props.book.authorName
+  }
+  
+  // CASE D: author is a string
+  if (typeof author === 'string') {
+    return author
+  }
+  
+  // CASE E: author is just an ID (number) - this is the current issue
+  if (typeof author === 'number') {
+    return 'No Author'
+  }
+  
+  return 'No Author'
 })
 
 const isFavorite = computed(() => 

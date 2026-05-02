@@ -78,5 +78,5 @@ export interface PaginationState {
 export interface BookFilters {
   search: string
   category: BookCategory | ''
-  year: number | null
+  author: string
 }
