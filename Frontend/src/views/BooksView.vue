@@ -1,17 +1,16 @@
 <template>
   <div>
-    <HeroCarousel />
+    <MostFavoritedCarousel />
 
     <div class="container">
-      <FeaturedCarousel />
-
       <div class="section-header">
         <h2 class="section-title">All Books</h2>
-        <p class="section-subtitle">{{ booksStore.filteredBooks.length }} books available</p>
+        <p class="section-subtitle">{{ booksStore.sortedBooks.length }} books available</p>
       </div>
 
       <FilterPanel 
         :filters="booksStore.filters"
+        :authors="booksStore.authors"
         @update="booksStore.setFilters"
         @reset="booksStore.resetFilters"
       />
@@ -58,8 +57,7 @@ import FilterPanel from '@/components/FilterPanel.vue'
 import Pagination from '@/components/Pagination.vue'
 import SkeletonCard from '@/components/SkeletonCard.vue'
 import EmptyState from '@/components/EmptyState.vue'
-import FeaturedCarousel from '@/components/FeaturedCarousel.vue'
-import HeroCarousel from '@/components/HeroCarousel.vue'
+import MostFavoritedCarousel from '@/components/MostFavoritedCarousel.vue'
 
 const booksStore = useBooksStore()
 const favoritesStore = useFavoritesStore()

@@ -11,22 +11,22 @@ export class BooksService {
 
   async getAllBooks() {
     try {
-      let tab = await this.bookRepo.find(
-        {
-          loadRelationIds : true
+      let tab = await this.bookRepo.find({
+        relations: {
+          author: true
+        },
+        select: {
+          author: {
+            id: true,
+            prenom: true,
+            nom: true
+          }
         }
-      );
+      });
       return { listeBooks: tab };
     } catch (err) {
       return { message: 'Problème avec TypeOrm' };
     }
-
-    // this.bookRepo.find().then(res => {
-    //     console.log(res);
-
-    // }).catch(err => {
-    //     console.log(err);
-    // })
   }
 
   addBook(newBook, idUser) {

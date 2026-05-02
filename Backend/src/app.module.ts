@@ -28,7 +28,8 @@ import { FavorisModule } from "./books/favoris.module";
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
+        type: 'mysql' as const,
+        driver: require('mysql2'),
         host: configService.get<string>('DB_HOST', 'localhost'),
         port: configService.get<number>('DB_PORT', 3308),
         username: configService.get<string>('DB_USERNAME', 'root'),

@@ -24,7 +24,7 @@
           </svg>
         </div>
         <div class="stat-content">
-          <div class="stat-value">{{ totalBooks }}</div>
+          <div class="stat-value">{{ booksStore.books.length }}</div>
           <div class="stat-label">Total Books</div>
         </div>
       </div>
@@ -42,7 +42,12 @@
       </div>
 
       <div class="card full-width">
-        <h2 class="card-title">Most Favorited Books</h2>
+        <h2 class="card-title">
+          <svg class="title-icon" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+          Most Favorited Books
+        </h2>
         <div class="favorites-list">
           <div v-for="book in adminStore.mostFavorited" :key="book.bookId" class="favorite-item">
             <img :src="book.image" :alt="book.title" class="favorite-image">
@@ -50,20 +55,57 @@
               <div class="favorite-title">{{ book.title }}</div>
               <div class="favorite-author">{{ book.authorName }}</div>
             </div>
-            <div class="favorite-count">{{ book.count }} ❤️</div>
+            <div class="favorite-count">
+              <svg class="count-icon" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+              {{ book.count }}
+            </div>
           </div>
         </div>
       </div>
 
       <div class="card full-width">
-        <h2 class="card-title">Books by Year</h2>
+        <h2 class="card-title">
+          <svg class="title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          Books by Author
+        </h2>
         <div class="stats-list">
-          <div v-for="stat in adminStore.bookStats" :key="stat.year" class="stats-item">
-            <span class="stats-year">{{ stat.year }}</span>
+          <div v-for="item in booksByAuthor" :key="item.author" class="stats-item">
+            <span class="stats-label">{{ item.author }}</span>
             <div class="stats-bar">
-              <div class="stats-fill" :style="{ width: getBarWidth(stat.NbBooks) }"></div>
+              <div class="stats-fill author-fill" :style="{ width: getBarWidth(item.count, maxAuthorBooks) }"></div>
             </div>
-            <span class="stats-count">{{ stat.NbBooks }}</span>
+            <span class="stats-count">{{ item.count }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card full-width">
+        <h2 class="card-title">
+          <svg class="title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+          </svg>
+          Books by Category
+        </h2>
+        <div class="stats-list">
+          <div v-for="item in booksByCategory" :key="item.category" class="stats-item">
+            <span class="stats-label category-label">
+              <span class="category-dot" :style="{ background: categoryColors[item.category] }"></span>
+              {{ item.category }}
+            </span>
+            <div class="stats-bar">
+              <div 
+                class="stats-fill" 
+                :style="{ 
+                  width: getBarWidth(item.count, maxCategoryBooks),
+                  background: categoryColors[item.category]
+                }"
+              ></div>
+            </div>
+            <span class="stats-count">{{ item.count }}</span>
           </div>
         </div>
       </div>
@@ -74,24 +116,79 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useAdminStore } from '@/stores/admin'
+import { useBooksStore } from '@/stores/books'
 import Loader from '@/components/Loader.vue'
 
 const adminStore = useAdminStore()
+const booksStore = useBooksStore()
 
-const totalBooks = computed(() => 
-  adminStore.bookStats.reduce((sum, stat) => sum + Number(stat.NbBooks), 0)
+// 📊 1. Books by Author
+const booksByAuthor = computed(() => {
+  const authorMap = new Map<string, number>()
+  
+  booksStore.books.forEach(book => {
+    let authorName = 'Unknown'
+    
+    if (typeof book.author === 'object' && book.author !== null) {
+      if ('prenom' in book.author && 'nom' in book.author) {
+        authorName = `${book.author.prenom} ${book.author.nom}`
+      } else if ('name' in book.author) {
+        authorName = book.author.name
+      }
+    } else if (typeof book.author === 'string') {
+      authorName = book.author
+    }
+    
+    authorMap.set(authorName, (authorMap.get(authorName) || 0) + 1)
+  })
+  
+  return Array.from(authorMap.entries())
+    .map(([author, count]) => ({ author, count }))
+    .sort((a, b) => b.count - a.count)
+})
+
+const maxAuthorBooks = computed(() => 
+  Math.max(...booksByAuthor.value.map(item => item.count), 1)
 )
 
-const maxBooks = computed(() => 
-  Math.max(...adminStore.bookStats.map(stat => Number(stat.NbBooks)))
+// 📊 2. Books by Category
+const booksByCategory = computed(() => {
+  const categoryMap = new Map<string, number>()
+  
+  booksStore.books.forEach(book => {
+    const category = book.category || 'autre'
+    categoryMap.set(category, (categoryMap.get(category) || 0) + 1)
+  })
+  
+  return Array.from(categoryMap.entries())
+    .map(([category, count]) => ({ category, count }))
+    .sort((a, b) => b.count - a.count)
+})
+
+const maxCategoryBooks = computed(() => 
+  Math.max(...booksByCategory.value.map(item => item.count), 1)
 )
 
-function getBarWidth(count: string) {
-  return `${(Number(count) / maxBooks.value) * 100}%`
+// Category colors
+const categoryColors: Record<string, string> = {
+  roman: '#EF4444',
+  science: '#3B82F6',
+  histoire: '#F59E0B',
+  informatique: '#10B981',
+  art: '#8B5CF6',
+  philosophie: '#EC4899',
+  autre: '#6B7280'
 }
 
-onMounted(() => {
-  adminStore.fetchStats()
+function getBarWidth(count: number, max: number) {
+  return `${(count / max) * 100}%`
+}
+
+onMounted(async () => {
+  await Promise.all([
+    adminStore.fetchStats(),
+    booksStore.fetchBooks()
+  ])
 })
 </script>
 
@@ -165,6 +262,15 @@ onMounted(() => {
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.title-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--primary);
 }
 
 .favorites-list {
@@ -205,9 +311,17 @@ onMounted(() => {
 }
 
 .favorite-count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--primary);
+  color: var(--error);
+}
+
+.count-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .stats-list {
@@ -218,14 +332,31 @@ onMounted(() => {
 
 .stats-item {
   display: grid;
-  grid-template-columns: 80px 1fr 60px;
+  grid-template-columns: 180px 1fr 60px;
   align-items: center;
   gap: 1rem;
 }
 
-.stats-year {
+.stats-label {
   font-weight: 600;
   color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.category-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.category-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .stats-bar {
@@ -238,7 +369,12 @@ onMounted(() => {
 .stats-fill {
   height: 100%;
   background: var(--primary);
-  transition: width 0.3s;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0.5rem;
+}
+
+.author-fill {
+  background: linear-gradient(90deg, #6366F1 0%, #8B5CF6 100%);
 }
 
 .stats-count {
